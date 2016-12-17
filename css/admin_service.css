@@ -1,0 +1,412 @@
+@charset "UTF-8";
+@font-face {
+  font-family: regular;
+  src: url("../fonts/regular.ttf"); }
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: regular; }
+
+body {
+  min-height: 100%; }
+
+.hide-layout {
+  background: #000;
+  /* фон */
+  left: 0;
+  /* координата снизу */
+  filter: progid:DXImageTransform.Microsoft.Alpha(opacity=50);
+  /* прозрачность для IE */
+  height: 100%;
+  /* высота на всю страницу */
+  opacity: 0.5;
+  /* прозрачность слоя */
+  position: fixed;
+  /* фиксируем элемент на странице*/
+  top: 0;
+  /* координата сверху */
+  width: 100%;
+  /* ширина на всю страницу */
+  z-index: 998;
+  /* z-index для перекрытия остальных элементов */
+  display: none; }
+
+.blur {
+  -webkit-filter: blur(0px);
+  -moz-filter: blur(0px);
+  -o-filter: blur(0px);
+  -ms-filter: blur(0px);
+  filter: blur(0px); }
+
+.click {
+  cursor: pointer; }
+
+.popup {
+  position: fixed;
+  top: -100%;
+  left: 28%;
+  width: 600px;
+  min-height: 400px;
+  background-color: #fff;
+  z-index: 999;
+  display: none; }
+  .popup .popup_title {
+    color: #fff;
+    background-color: #3c8dbc;
+    padding: 10px 20px;
+    font-size: 20px; }
+  .popup .popup_content {
+    font-size: 20px;
+    text-align: center;
+    margin-top: 20px; }
+    .popup .popup_content table {
+      margin: auto;
+      text-align: left;
+      display: inline-block;
+      float: left; }
+      .popup .popup_content table input, .popup .popup_content table select {
+        font-size: 16px; }
+      .popup .popup_content table td {
+        padding-right: 15px; }
+    .popup .popup_content .more_tenants {
+      float: right;
+      display: inline-block; }
+    .popup .popup_content .error {
+      color: red;
+      font-size: 16px;
+      margin-top: 15px; }
+    .popup .popup_content input[type="submit"] {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      width: 125px;
+      height: 35px; }
+  .popup .popup_close {
+    position: absolute;
+    top: 6px;
+    right: 13px;
+    font-size: 24px;
+    color: #fff;
+    cursor: pointer; }
+  .popup.number {
+    left: 470px;
+    width: 425px;
+    min-height: 210px; }
+    .popup.number .popup_content {
+      text-align: left; }
+      .popup.number .popup_content .error {
+        margin-left: 20px; }
+  .popup.add_tenant {
+    width: 900px; }
+  .popup.del_number, .popup.del_tenant {
+    width: 480px;
+    min-height: 210px; }
+    .popup.del_number .popup_content, .popup.del_tenant .popup_content {
+      text-align: center; }
+      .popup.del_number .popup_content .delete_alert, .popup.del_tenant .popup_content .delete_alert {
+        color: #dd4b39;
+        margin-bottom: 25px; }
+      .popup.del_number .popup_content .delete_ok, .popup.del_number .popup_content .delete_close, .popup.del_tenant .popup_content .delete_ok, .popup.del_tenant .popup_content .delete_close {
+        display: inline-block;
+        width: 125px;
+        height: 35px;
+        color: #fff;
+        background-color: #00c0ef;
+        border: 2px solid #00c0ef;
+        transition-duration: 0.3s;
+        cursor: pointer;
+        padding-top: 3px;
+        margin-left: 30px;
+        margin-right: 30px; }
+        .popup.del_number .popup_content .delete_ok:hover, .popup.del_number .popup_content .delete_close:hover, .popup.del_tenant .popup_content .delete_ok:hover, .popup.del_tenant .popup_content .delete_close:hover {
+          background-color: #fff;
+          color: #00c0ef; }
+
+.main_menu {
+  float: left;
+  position: fixed;
+  min-height: 100vh;
+  width: 230px;
+  background-color: #222d32;
+  color: #fff; }
+  .main_menu li {
+    display: inline-block;
+    width: 100%;
+    height: 40px;
+    padding-top: 9px;
+    font-size: 18px;
+    padding-left: 20px;
+    border-left: 3px solid transparent;
+    transition: 0.1s;
+    color: #b8c7ce;
+    cursor: pointer; }
+    .main_menu li:hover {
+      background-color: #1a2226;
+      border-left: 3px solid #00c0ef;
+      color: #fff; }
+    .main_menu li.active {
+      background-color: #1a2226;
+      border-left: 3px solid #00c0ef;
+      color: #fff; }
+  .main_menu .submenu_line {
+    font-size: 14px;
+    color: #8aa4af;
+    padding-top: 12px;
+    background-color: #2c3b41;
+    padding-left: 40px; }
+    .main_menu .submenu_line:hover {
+      color: #fff; }
+
+.wrap {
+  margin-left: 230px;
+  min-height: 100vh;
+  background-color: #ecf0f5; }
+  .wrap .title {
+    height: 50px;
+    width: 100%;
+    background-color: #3c8dbc; }
+    .wrap .title .main_title {
+      display: inline-block;
+      font-size: 30px;
+      color: #FFF;
+      margin-top: 4px;
+      margin-left: 45px; }
+    .wrap .title a {
+      color: #fff;
+      display: inline-block;
+      text-align: right;
+      padding-top: 11px;
+      float: right;
+      margin-right: 20px;
+      font-size: 20px; }
+  .wrap .content {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    -ms-flex-pack: start;
+        justify-content: flex-start;
+    width: 1100px;
+    margin: auto; }
+    .wrap .content .room {
+      display: inline-block;
+      width: 85px;
+      height: 100px;
+      color: #fff;
+      text-align: center;
+      font-size: 50px;
+      padding-top: 20px;
+      margin: 20px 12px;
+      box-shadow: 0px 2px 7px -1px grey;
+      transition-duration: 0.3s;
+      transition-delay: 0.3s;
+      position: relative;
+      cursor: pointer; }
+      .wrap .content .room .menu {
+        width: 0px;
+        height: 100px;
+        position: absolute;
+        top: 0px;
+        z-index: 2;
+        color: transparent;
+        font-size: 20px;
+        background-color: #fff;
+        transition-duration: 0.1s, 0.2s, 0.2s;
+        transition-property: color, height, width;
+        transition-delay: 0s, 0.1s, 0.3s; }
+        .wrap .content .room .menu .text {
+          display: none; }
+      .wrap .content .room .openMenu {
+        width: 200px;
+        height: 300px;
+        color: black;
+        transition-duration: 0.3s, 0.3s, 0.1s;
+        transition-property: width, height, color;
+        transition-delay: 0s, 0.3s, 0.6s; }
+        .wrap .content .room .openMenu .text {
+          display: inline-block; }
+          .wrap .content .room .openMenu .text .firm {
+            font-style: italic;
+            font-size: 16px;
+            margin-top: 5px; }
+          .wrap .content .room .openMenu .text .surname {
+            margin-top: 30px;
+            margin-bottom: 40px;
+            font-weight: bold;
+            font-size: 24px; }
+          .wrap .content .room .openMenu .text .date {
+            font-size: 18px;
+            margin: auto; }
+            .wrap .content .room .openMenu .text .date td {
+              padding-right: 3px; }
+            .wrap .content .room .openMenu .text .date .number {
+              font-weight: bold; }
+          .wrap .content .room .openMenu .text .firm_1, .wrap .content .room .openMenu .text .firm_2 {
+            font-style: italic;
+            font-size: 16px;
+            margin-top: 5px; }
+          .wrap .content .room .openMenu .text .surname_1, .wrap .content .room .openMenu .text .surname_2 {
+            margin-bottom: 15px;
+            font-size: 24px;
+            font-weight: bold; }
+          .wrap .content .room .openMenu .text span {
+            display: block;
+            margin-left: 15px;
+            text-align: left; }
+          .wrap .content .room .openMenu .text .type {
+            margin-top: 15px; }
+          .wrap .content .room .openMenu .text .edit {
+            position: absolute;
+            left: 27px;
+            bottom: 40px;
+            text-align: center;
+            text-decoration: underline; }
+          .wrap .content .room .openMenu .text .delete {
+            position: absolute;
+            left: 59px;
+            bottom: 10px;
+            text-align: center;
+            text-decoration: underline; }
+          .wrap .content .room .openMenu .text .edit:hover, .wrap .content .room .openMenu .text .delete:hover {
+            color: #00c0ef; }
+    .wrap .content .left_menu .menu {
+      right: 85px; }
+    .wrap .content .right_menu .menu {
+      left: 85px; }
+    .wrap .content .free {
+      background-color: #00c0ef; }
+    .wrap .content .reserved {
+      background-color: #dd4b39; }
+    .wrap .content .disable {
+      background-color: #a0a0a0; }
+    .wrap .content .room:hover {
+      box-shadow: 0px 5px 7px 0px grey;
+      transition-delay: 0s; }
+    .wrap .content .room.room_click {
+      background-color: #fff;
+      color: #222d32;
+      transition-delay: 0.3s; }
+  .wrap .content .nav {
+    text-align: center;
+    width: 100%; }
+    .wrap .content .nav .arrow {
+      cursor: pointer;
+      font-size: 18px;
+      text-decoration: underline;
+      font-weight: bold;
+      padding-top: 5px;
+      padding-bottom: 5px; }
+      .wrap .content .nav .arrow.left {
+        float: left; }
+      .wrap .content .nav .arrow.right {
+        float: right; }
+    .wrap .content .nav .year {
+      font-size: 20px;
+      font-weight: bold;
+      padding-top: 5px;
+      padding-bottom: 5px;
+      display: inline-block; }
+  .wrap .content .calendar {
+    border-collapse: collapse;
+    text-align: center;
+    font-size: 20px; }
+    .wrap .content .calendar th, .wrap .content .calendar td {
+      border: 3px solid #fff;
+      width: 40px;
+      height: 40px;
+      position: relative; }
+      .wrap .content .calendar th.red, .wrap .content .calendar td.red {
+        background-color: #dd4b39; }
+      .wrap .content .calendar th.line:after, .wrap .content .calendar td.line:after {
+        content: '';
+        display: inline-block;
+        position: absolute;
+        bottom: 16px;
+        left: -10px;
+        width: 56px;
+        height: 3px;
+        background-color: #fff;
+        transform: rotate(-45deg); }
+    .wrap .content .calendar td:first-child {
+      width: 60px; }
+    .wrap .content .calendar td:hover .calendar_info {
+      display: inline-block; }
+  .wrap .content .calendar_info {
+    width: 150px;
+    position: absolute;
+    top: -173px;
+    left: -60px;
+    display: none; }
+    .wrap .content .calendar_info .content {
+      height: 150px;
+      width: 150px;
+      background-color: #fff;
+      box-shadow: 0px 2px 7px -1px grey;
+      padding: 15px;
+      font-size: 14px;
+      display: block; }
+      .wrap .content .calendar_info .content .firm {
+        margin-top: 5px;
+        font-size: 16px;
+        font-style: italic;
+        text-align: center; }
+      .wrap .content .calendar_info .content .name {
+        text-align: center;
+        font-size: 22px;
+        margin-bottom: 25px; }
+    .wrap .content .calendar_info:after {
+      content: '';
+      display: inline-block;
+      width: 0;
+      height: 0;
+      border-left: 75px solid transparent;
+      border-right: 75px solid transparent;
+      border-top: 20px solid #fff; }
+    .wrap .content .calendar_info.left {
+      top: -60px;
+      left: -175px;
+      z-index: 20; }
+      .wrap .content .calendar_info.left:after {
+        position: absolute;
+        top: 0px;
+        left: 150px;
+        border-top: 75px solid transparent;
+        border-left: 20px solid #fff;
+        border-bottom: 75px solid transparent; }
+  .wrap .content .top .calendar_info {
+    top: 60px;
+    z-index: 20; }
+    .wrap .content .top .calendar_info:after {
+      position: absolute;
+      top: -20px;
+      left: 0;
+      border-top: 0px;
+      border-bottom: 20px solid #fff; }
+    .wrap .content .top .calendar_info.left {
+      top: -60px;
+      left: -175px;
+      z-index: 20; }
+      .wrap .content .top .calendar_info.left:after {
+        position: absolute;
+        top: 0px;
+        left: 150px;
+        border-top: 75px solid transparent;
+        border-left: 20px solid #fff;
+        border-bottom: 75px solid transparent; }
+  .wrap .tenants {
+    border-collapse: collapse;
+    text-align: center;
+    font-size: 15px;
+    margin-top: 30px; }
+    .wrap .tenants .button {
+      cursor: pointer; }
+    .wrap .tenants th, .wrap .tenants td {
+      border: 3px solid #fff;
+      padding: 5px;
+      transition: 0.2s; }
+    .wrap .tenants th {
+      cursor: pointer; }
+    .wrap .tenants .blue {
+      background-color: #00c0ef; }

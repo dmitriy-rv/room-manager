@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="ru-RU">
+<head>
+	<meta charset="UTF-8">
+	<title>Управление номерами</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.js"></script>
+	<link rel="stylesheet" href="css/admin_service.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script src="js/admin_service.js"></script>
+</head>
+<body ng-app="app"   ng-controller="appController">
+<div class="popup" id="popup" ng-init="select = 1" ng-class="{ number:tab === 1, del_number:select === 5, add_tenant:tab === 3, del_tenant:select === 6}">
+	
+	<div class="popup_warp" ng-show="tab == 1 && select == 1" >
+		<div class="popup_title">
+			Добавить комнату
+		</div>
+		<div class="popup_content">
+
+			<form name='send_room' ng-submit="Create_number()">
+				<table>
+					<tr>
+						<td>
+							Номер комнаты:
+						</td>
+						<td>
+							<input type="text" name="number" ng-model='number' my-directive required id="room_number">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Тип комнаты:
+						</td>
+						<td>
+							<select name="type" ng-model='type' required id="room_type">
+				  				<option ng-repeat='item in all_rooms_type' value="{{ item.id }}">
+				  					{{ item.name }}
+				  				</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Статус:
+						</td>
+						<td>
+							<select name="stat" ng-model='stat' required id="room_stat">
+				  				<option>Работает</option>
+				  				<option>Не работает</option>
+							</select>
+						</td>
+					</tr>
+				</table>
+				<div class="error" ng-show="send_room.number.$dirty &&send_room.number.$invalid">Выбраный номер уже существует</div>
+				<input type="submit" ng-disabled="send_room.number.$invalid && send_room.number.$dirty || send_room.type.$invalid || send_room.stat.$invalid"  value="Сохранить">
+			</form>
+
+		</div>
+	</div>
+
+	<div class="popup_warp" ng-show="tab == 1 && select == 2">
+		<div class="popup_title">
+			Редактировать комнату
+		</div>
+		<div class="popup_content">
+
+			<form name='send_edit_room' ng-submit="Edit_number()">
+				<table>
+					<tr>
+						<td>
+							Номер комнаты: 
+						</td>
+						<td>
+							<input type="text" name="edit_number" ng-model='edit_number' required id="edit_room_number" disabled="true">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Тип комнаты:
+						</td>
+						<td>
+							<select name="edit_type" ng-model='edit_type' required id="edit_room_type">
+	  							<option ng-repeat='item in all_rooms_type' value="{{ item.id }}">
+	  								{{ item.name }}
+	  							</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Статус: 
+						</td>
+						<td>
+							<select name="stat" ng-model='edit_stat' required id="edit_room_stat">
+	  							<option>Работает</option>
+	  							<option>Не работает</option>
+							</select>
+						</td>
+					</tr>
+				</table>
+				<input type="submit"  value="Сохранить">
+			</form>
+
+		</div>
+	</div>
+
+	<div class="popup_warp" ng-show="tab == 1 && select == 5">
+		<div class="popup_title">
+			Удалить комнату
+		</div>
+		<div class="popup_content">
+			<div class="delete_alert">
+				Вы уверены, что хотите удалить  комнату № {{ number_for_del }}?<br>
+				Все жильцы, привязанные к комнате, так же удалятся из списков!
+			</div>
+			<div class="delete_ok" ng-click="delete_number(number_for_del)">
+				Удалить
+			</div>
+			<div class="delete_close" ng-click="closePopup()">
+				Отмена
+			</div>
+		</div>
+	</div>
+
+
+	<div class="popup_warp" ng-show="tab == 3 && select == 3">
+		<div class="popup_title">
+			Добавить жильца
+		</div>
+		<div class="popup_content">
+			<form  name='send_tenant' ng-submit="CreateTenant()">
+				<table>
+					<tr>
+						<td>
+							Фамилия:
+						</td>
+						<td>
+							<input required type="text" ng-model="surname" name="surname" id="surname"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Имя:
+						</td>
+						<td>
+							<input required type="text" ng-model="first_name" name="first_name" id="first_name"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Отчество:
+						</td>
+						<td>
+							<input required type="text" ng-model="second_name" name="second_name" id="second_name"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Дата рождения:
+						</td>
+						<td>
+							<input required type="date" ng-model="date_birthday" name="date_birthday" id="date_birthday"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Паспортные данные:
+						</td>
+						<td>
+							<input required type="text" ng-model="pass_data" name="pass_data" id="pass_data"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Турфирма:
+						</td>
+						<td>
+							<select required ng-model="firm" name="firm" id="firm">
+						  		<option value="Нет">
+						  			Нет
+						  		</option>
+				  				<option ng-repeat='item in array_firm' value="{{ item.name }}">
+				  					{{ item.name }}
+				  				</option>			  	
+						  	</select>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Комната:
+						</td>
+						<td>
+							<select  required ng-model="room" name="room" id="room" tn-directive>
+				  				<option ng-repeat='item in array_of_rooms' value="{{ item.number }}">
+				  					{{ item.number }}
+				  				</option>			  	
+						  	</select>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Дата заезда:
+						</td>
+						<td>
+							<input type="date" required ng-model="date_from" name="date_from" id="date_from"  tn-directive/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Дата отъезда:
+						</td>
+						<td>
+							<input  type="date" required ng-model="date_to" name="date_to" id="date_to"  tn-directive/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Доп. место:
+						</td>
+						<td>
+							<input type="checkbox" required ng-model="more_place" name="more_place" id="more_place" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Цена:
+						</td>
+						<td>
+							<input type="number" required ng-model="price" name="price" id="price" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Количество человек:
+						</td>
+						<td>
+							<input type="number" required ng-model="number_people" name="number_people" id="number_people"  min="1" max="5"/>
+						</td>
+					</tr>
+				</table>
+				<div class="more_tenants">
+					<div ng-repeat="n in  range(2,number_people)">
+							Жилец {{ n }}:<br>
+						ФИО:
+						<input required type="text" ng-model="surname" name="surname" id="surname"/><br>
+						Д.Р.:
+						<input required type="date" ng-model="date_birthday" name="date_birthday" id="date_birthday"/>
+						Паспорт:
+						<input required type="text" ng-model="pass_data" name="pass_data" id="pass_data">
+					</div>
+				</div>
+
+			  	<div class="error" ng-show="date_valid == 1">
+			  		Ошибка! Дата отъезда не может<br> быть раньше даты заезда
+			  	</div>
+			  	<div class="error" ng-show="date_valid == 2">
+			  		Ошибка! Выбранные даты заняты
+			  	</div>
+			  	<input type="submit" value="Сохранить" ng-disabled="send_tenant.room.$invalid || send_tenant.date_from.$invalid || send_tenant.date_to.$invalid || date_valid == 1 || date_valid == 2"/>
+			</form>
+		</div>
+	</div>
+
+	<div class="popup_warp" ng-show="tab == 3 && select == 4">
+		<div class="popup_title">
+			Редактировать жильца
+		</div>
+		<div class="popup_content">
+			<form  name='edit_send_tenant' ng-submit="EditTenant()">
+			<table>
+				<tr>
+					<td>
+						Фамилия:
+					</td>
+					<td>
+						<input required type="text" ng-model="edit_surname" name="edit_surname" id="edit_surname"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Имя:
+					</td>
+					<td>
+						<input required type="text" ng-model="edit_first_name" name="edit_first_name" id="edit_first_name"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Отчество:
+					</td>
+					<td>
+						<input required type="text" ng-model="edit_second_name" name="edit_second_name" id="edit_second_name"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Дата рождения: 
+					</td>
+					<td>
+						<input required type="date" ng-model="edit_date_birthday" name="edit_date_birthday" id="edit_date_birthday"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Паспортные данные: 
+					</td>
+					<td>
+						<input required type="text" ng-model="edit_pass_data" name="edit_pass_data" id="edit_pass_data"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Турфирма:
+					</td>
+					<td>
+						<select required ng-model="edit_firm" name="edit_firm" id="edit_firm">
+			  				<option value="Нет">
+			  					Нет
+			  				</option>
+	  						<option ng-repeat='item in array_firm' value="{{ item.name }}">
+	  							{{ item.name }}
+	  						</option>			  	
+			  			</select>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Комната:
+					</td>
+					<td>
+					  	<select  required ng-model="room" name="edit_room" id="edit_room" id="edit_room" tnedit-directive>
+			  				<option ng-repeat='item in array_of_rooms' value="{{ item.number }}">
+			  					{{ item.number }}
+			  				</option>			  	
+					  	</select>						
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Дата заезда: 
+					</td>
+					<td>
+						<input type="date" required ng-model="edit_date_from" name="edit_date_from" id="edit_date_from"  tnedit-directive/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Дата отъезда: 
+					</td>
+					<td>
+						<input  type="date" required ng-model="edit_date_to" name="edit_date_to" id="edit_date_to"  tnedit-directive/><br>
+
+					</td>
+				</tr>
+			</table>
+			  	<input required type="hidden" ng-model="edit_id" name="edit_id" id="edit_id"/>
+			  	<div class="error" ng-show="edit_date_valid == 1">
+			  		Ошибка! Дата отъезда не может<br> быть раньше даты приезда
+			  	</div>
+			  	<div class="error" ng-show="edit_date_valid == 2">
+			  		Ошибка! Выбранные даты заняты
+			  	</div>
+			  	<input type="submit" value="Сохранить" ng-disabled="edit_date_valid == 1 || edit_date_valid == 2"/>
+			</form>
+		</div>
+	</div>
+	
+	<div class="popup_warp" ng-show="tab == 3 && select == 6">
+		<div class="popup_title">
+			Удалить жильца
+		</div>
+		<div class="popup_content">
+			<div class="delete_alert">
+				Вы уверены, что хотите удалить жильца по фамилии {{ surname_for_del }}?
+			</div>
+			<div class="delete_ok" ng-click="delete_tenant(tenant_for_del)">
+				Удалить
+			</div>
+			<div class="delete_close" ng-click="closePopup()">
+				Отмена
+			</div>
+		</div>
+	</div>
+
+	<div class="popup_close" id="popup_close" ng-click="closePopup()">
+		X
+	</div>
+</div>
+<div class="blur" id="blur">
+
+	
+	<div class="main_menu">
+		<ul ng-init="tab = 1">
+			<li ng-click="tab = 1" ng-class="{ active:tab === 1}" >Номера</li>
+			<ul id="menu_1" class="submenu" ng-show="tab == 1">
+				<li class="submenu_line click" ng-click="openPopup('new'); select = 1">
+					Добавить номер
+				</li>
+			</ul>
+			<li ng-click="tab = 2"  ng-class="{ active:tab === 2}" >Календарь</li>
+			<li ng-click="tab = 3"  ng-class="{ active:tab === 3}" >Жильцы</li>
+			<ul id="menu_3" class="submenu" ng-show="tab == 3">
+				<li class="submenu_line click" ng-click="openPopup('new_tenant'); select = 3">
+					Добавить жильца
+				</li>
+			</ul>
+		</ul>
+	</div>
+	<div class="wrap">
+		<div class="title">
+			<div class="main_title" ng-show="tab == 1">
+				Номера
+			</div>
+			<div class="main_title" ng-show="tab == 2">
+				Календарь
+			</div>
+			<div class="main_title" ng-show="tab == 3">
+				Жильцы
+			</div>
+
+			<a href="/admin/">
+				Вернуться на главную
+			</a>
+		</div>
+
+		<div class="content"  ng-show="tab === 1">
+			<div ng-repeat="item in rooms" class="room {{ item.stat }}" id="room_{{ item.number }}" ng-click="Click(item.number)" ng-class="($index+2) % 10 == 0 || ($index +1) % 10 == 0 ? 'left_menu' : 'right_menu'">
+				{{ item.number }}
+				<div class="menu">
+					<div class="text">
+						<div class="firm" ng-show="item.firm !== undefine" ng-hide="item.firm === 'Нет' ">
+							{{ item.firm }}
+						</div>
+						<div class="surname"  ng-show="item.surname !== undefine">
+							{{ item.surname }}
+						</div>
+						<table class="date"  ng-show="item.from !== undefine">
+							<tr>
+								<td>
+									с:
+								</td>
+								<td class="number">
+									{{ item.from| date:'dd.MM.yyyy' }}
+								</td>
+							</tr>
+							<tr>
+								<td>
+									по: 
+								</td>
+								<td class="number">
+									{{ item.to| date:'dd.MM.yyyy' }}
+								</td>
+							</tr>
+						</table>	
+						<span  ng-show="item.two_tenants == true">
+							Заезжает:
+						</span>
+						<div class="firm" ng-show="item.two_tenants == true" ng-hide="item.firm_1 === 'Нет' ">
+							{{ item.firm_1 }}
+						</div>
+						<div class="surname_1" ng-show="item.two_tenants == true">
+							{{ item.surname_1 }}
+						</div>
+						<span  ng-show="item.two_tenants == true">
+							Выезжает:
+						</span>
+						<div class="firm" ng-show="item.two_tenants == true" ng-hide="item.firm_2 === 'Нет' ">
+							{{ item.firm_2 }}
+						</div>
+						<div class="surname_2" ng-show="item.two_tenants == true">
+							{{ item.surname_2 }}
+						</div>
+
+
+
+						<div class="type">
+							{{ item.room_type }}
+						</div>
+						<div class="edit" ng-click="openPopup('edit', item.number); select = 2">
+							Редактировать
+						</div>
+						<div class="delete" ng-click="openPopup('delete_number', item.number); select = 5">
+							Удалить
+						</div>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+		<div class="content" ng-show="tab === 2">
+		<div class="nav">
+		<div class="arrow left" ng-click="MonthDown()"><< Назад</div>
+		<div class="year">{{month_send}} {{year}} г.</div>
+		<div class="arrow right" ng-click="MonthUp()" class="">Вперед >></div>			
+		</div>		
+			<table class="calendar">
+				<tr>
+					<th ng-repeat="day in array_of_days">
+						{{ day }}
+					</th>
+				</tr>
+				<tr ng-repeat="item in rooms_by_days" ng-class="{top:$index == 0 || $index == 1}">
+					<td>
+						{{ item.number }}
+					</td>
+					<td ng-repeat="day in item.days" ng-class="{ red:day.reserved == true, line:day.many == true}"  ng-click="Click_day($index);">
+						<div class="calendar_info" ng-show="day.reserved == true"  ng-class="{left: $last == true}">
+							<div class="content" ng-repeat="man in tenants" ng-if="man.tenant_id == day.tenant_id" ng-show="day.many == false">
+								<div class="firm">
+									{{man.firm}}
+								</div>	
+								<div class="name">
+									{{man.tenant}}
+								</div>
+								с: {{man.date_from| date:'dd.MM.yyyy' }} <br>
+								по: {{man.date_to| date:'dd.MM.yyyy' }}
+							</div>
+							<div class="content" ng-show="day.many == true">
+								<div ng-repeat="man in tenants" ng-if="man.tenant_id == day.tenant_id_2">
+									<div class="firm">
+										{{man.firm}}
+									</div>
+									<div class="name">
+										{{man.tenant}}
+									</div>
+						
+								</div>
+								<div ng-repeat="man in tenants" ng-if="man.tenant_id == day.tenant_id_1">
+									<div class="firm">
+										{{man.firm}}
+									</div>
+									<div class="name">
+										{{man.tenant}}
+									</div>
+								</div>					
+							</div>
+						</div>
+					</td>
+				</tr>
+			</table>
+	
+
+		</div>
+		
+		<div class="content" ng-show="tab === 3">
+			<table class="tenants" ng-init="tenant_sort = 1">
+				<tr>
+					<th  ng-click="SortTenantsByName()" ng-class="{blue:tenant_sort == 1}">
+						Фамилия
+					</th>
+					<th>
+						Имя
+					</th>
+					<th>
+						Отчество
+					</th>
+					<th  ng-click="SortTenantsByRoom()" ng-class="{blue:tenant_sort == 2}">
+						Номер
+					</th>
+					<th>
+						Дата рождения
+					</th>
+					<th>
+						Паспортные данные
+					</th>
+					<th ng-click="SortTenantsByFirm()" ng-class="{blue:tenant_sort == 5}">
+						Турфирма
+					</th>
+					<th  ng-click="SortTenantsByDateFrom()" ng-class="{blue:tenant_sort == 3}">
+						Дата приезда
+					</th>
+					<th  ng-click="SortTenantsByDateTo()" ng-class="{blue:tenant_sort == 4}">
+						Дата отъезда
+					</th>
+					<th>Редактирование</th>
+				</tr>
+				<tr ng-repeat="item in tenants">
+					<td>
+						{{ item.tenant }}
+					</td>
+					<td>
+						{{ item.first_name }}
+					</td>
+					<td>
+						{{ item.second_name }}
+					</td>
+					<td>
+						{{ item.number }}
+					</td>
+					<td>
+						{{ item.date_bdh }}
+					</td>
+					<td>
+						{{ item.pass }}
+					</td>
+					<td>
+						{{ item.firm }}
+					</td>
+					<td>
+						{{ item.date_from| date:'dd.MM.yyyy'  }}
+					</td>
+					<td>
+						{{ item.date_to| date:'dd.MM.yyyy'  }}
+					</td>
+					<td>
+						<div class="button" id='tenant_{{ item.tenant_id }}'  ng-click="openPopup('edit_tenant', item.number, item.tenant, item.first_name, item.second_name, item.date_bdh, item.pass, item.firm, item.date_from, item.date_to, item.tenant_id); select = 4">
+							Изменить 
+						</div>
+					</td>
+					<td>
+						<div class="button" ng-click="openPopup('delete_tenant', item.tenant_id, item.tenant); select = 6">
+							X
+						</div>						
+					</td>
+				</tr>
+			</table>
+		</div>
+
+</div>
+
+<div id="hide-layout" class="hide-layout" ng-click="closePopup()"></div>
+
+<script>
+	$(function() {
+  		alignCenter($('#popup'));
+  		$('#popup').css({top:'-100%'}); // центрировали окно
+  		$(window).resize(function() {
+    		alignCenter($('#popup')); // центрирование при ресайзе окна
+  		})
+
+  		function alignCenter(elem) {
+  			elem.css({ // назначение координат left и top
+    		left: ($(window).width() - elem.width()) / 2 + 'px',
+    		top: ($(window).height() - elem.height()) / 2 + 'px'
+  		})
+	}
+  	})
+</script>
+</body>
+</html>
